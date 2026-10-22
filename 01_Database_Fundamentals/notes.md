@@ -41,4 +41,4 @@ SQL stands for Structured Query Language.
 
 It is used to communicate with relational databases.
 
-SQL can be used to create tables, insert records, retrieve information, update data, and delete records.
+SQL can be used to create tables, insert records, retrieve information, update data, and delete records
