@@ -28,6 +28,7 @@ WHERE student_id = 104;
 -- Q20: Delete Sneha's record
 DELETE FROM Students
 WHERE student_id = 104;
+-- ==========================================
 
 -- ==========================================
 -- End of Solutions
