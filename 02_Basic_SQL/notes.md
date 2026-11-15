@@ -183,3 +183,359 @@ Removes the `Students` table itself, including its structure and data.
 * `DELETE` removes rows, not individual columns.
 * `TRUNCATE` removes all rows but preserves the table structure.
 * `DROP TABLE` removes the table itself.
+
+## 7. Filtering Records Using WHERE
+
+The `WHERE` clause is used to filter records based on a specified condition.
+
+**Syntax:**
+
+```sql
+SELECT column_name
+FROM table_name
+WHERE condition;
+```
+
+**Example:**
+
+```sql
+SELECT *
+FROM Students
+WHERE marks > 80;
+```
+
+This query displays students who scored more than 80 marks.
+
+### 7.1 Comparison Operators
+
+| Operator | Purpose |
+|---|---|
+| `=` | Equal to |
+| `>` | Greater than |
+| `<` | Less than |
+| `>=` | Greater than or equal to |
+| `<=` | Less than or equal to |
+| `<>` | Not equal to |
+
+### 7.2 Logical Operators
+
+- `AND` – All conditions must be true.
+- `OR` – At least one condition must be true.
+- `NOT` – Reverses a condition.
+
+**Example:**
+
+```sql
+SELECT *
+FROM Students
+WHERE department = 'CSE' AND marks > 80;
+```
+
+### 7.3 IN and NOT IN
+
+`IN` checks whether a value matches any value in a specified list.
+
+```sql
+SELECT *
+FROM Students
+WHERE department IN ('CSE', 'ISE');
+```
+
+`NOT IN` excludes the specified values.
+
+```sql
+SELECT *
+FROM Students
+WHERE department NOT IN ('CSE', 'ISE');
+```
+
+### 7.4 BETWEEN
+
+`BETWEEN` checks whether a value falls within a specified range. Both endpoints are included.
+
+```sql
+SELECT *
+FROM Students
+WHERE marks BETWEEN 60 AND 90;
+```
+
+### 7.5 LIKE
+
+`LIKE` is used to search for a specified pattern in a column.
+
+| Wildcard | Meaning |
+|---|---|
+| `%` | Zero or more characters |
+| `_` | Exactly one character |
+
+**Examples:**
+
+```sql
+-- Names starting with A
+SELECT *
+FROM Students
+WHERE student_name LIKE 'A%';
+
+-- Names ending with A
+SELECT *
+FROM Students
+WHERE student_name LIKE '%A';
+
+-- Names containing A
+SELECT *
+FROM Students
+WHERE student_name LIKE '%A%';
+```
+
+## 8. DISTINCT
+
+`DISTINCT` is used to retrieve unique values and remove duplicates from the result.
+
+**Syntax:**
+
+```sql
+SELECT DISTINCT column_name
+FROM table_name;
+```
+
+**Example:**
+
+```sql
+SELECT DISTINCT department
+FROM Students;
+```
+
+This query displays each department only once.
+
+## 9. ORDER BY
+
+`ORDER BY` is used to sort records in ascending or descending order.
+
+| Keyword | Purpose |
+|---|---|
+| ASC | Ascending order |
+| DESC | Descending order |
+
+**Example:**
+
+```sql
+SELECT *
+FROM Students
+ORDER BY marks DESC;
+```
+
+This displays students from highest marks to lowest marks.
+
+Multiple-column sorting:
+
+```sql
+SELECT *
+FROM Students
+ORDER BY department ASC, marks DESC;
+```
+
+This sorts departments alphabetically and marks from highest to lowest within each department.
+
+## 10. LIMIT
+
+`LIMIT` restricts the number of rows returned by a query. It is supported by MySQL.
+
+**Example:**
+
+```sql
+SELECT *
+FROM Students
+ORDER BY marks DESC
+LIMIT 3;
+```
+
+This displays the top three students based on marks.
+
+## 11. NULL Values
+
+`NULL` represents a missing or unknown value in a database.
+
+### 11.1 IS NULL
+
+Used to find records containing NULL values.
+
+```sql
+SELECT *
+FROM Students
+WHERE city IS NULL;
+```
+
+### 11.2 IS NOT NULL
+
+Used to find records that do not contain NULL values.
+
+```sql
+SELECT *
+FROM Students
+WHERE city IS NOT NULL;
+```
+
+**Important:** Use `IS NULL` or `IS NOT NULL`, not `= NULL`.
+
+## 12. Aggregate Functions
+
+Aggregate functions perform calculations on multiple rows and return a single result.
+
+| Function | Purpose |
+|---|---|
+| COUNT() | Counts records |
+| SUM() | Calculates total |
+| AVG() | Calculates average |
+| MIN() | Finds the minimum value |
+| MAX() | Finds the maximum value |
+
+**Examples:**
+
+```sql
+-- Count students
+SELECT COUNT(*) FROM Students;
+
+-- Total marks
+SELECT SUM(marks) FROM Students;
+
+-- Average marks
+SELECT AVG(marks) FROM Students;
+
+-- Lowest marks
+SELECT MIN(marks) FROM Students;
+
+-- Highest marks
+SELECT MAX(marks) FROM Students;
+```
+
+**Important:** Most aggregate functions ignore NULL values. `COUNT(*)` counts all rows.
+
+## 13. GROUP BY
+
+`GROUP BY` is used to group rows that have the same values in a specified column. It is commonly used with aggregate functions.
+
+**Syntax:**
+
+```sql
+SELECT column_name, AGGREGATE_FUNCTION(column)
+FROM table_name
+GROUP BY column_name;
+```
+
+**Example:**
+
+```sql
+SELECT department, AVG(marks)
+FROM Students
+GROUP BY department;
+```
+
+This calculates the average marks separately for each department.
+
+Other examples:
+
+```sql
+-- Total marks department-wise
+SELECT department, SUM(marks)
+FROM Students
+GROUP BY department;
+
+-- Number of students in each department
+SELECT department, COUNT(*)
+FROM Students
+GROUP BY department;
+
+-- Highest marks in each department
+SELECT department, MAX(marks)
+FROM Students
+GROUP BY department;
+```
+
+## 14. HAVING
+
+`HAVING` is used to filter groups created by `GROUP BY`.
+
+**Syntax:**
+
+```sql
+SELECT column_name, AGGREGATE_FUNCTION(column)
+FROM table_name
+GROUP BY column_name
+HAVING condition;
+```
+
+**Example:**
+
+```sql
+SELECT department, AVG(marks)
+FROM Students
+GROUP BY department
+HAVING AVG(marks) > 80;
+```
+
+This displays departments whose average marks are greater than 80.
+
+### 14.1 Difference Between WHERE and HAVING
+
+| WHERE | HAVING |
+|---|---|
+| Filters individual rows | Filters groups |
+| Applied before GROUP BY | Applied after GROUP BY |
+| Commonly used for row conditions | Commonly used with aggregate functions |
+
+**Example using WHERE:**
+
+```sql
+SELECT *
+FROM Students
+WHERE marks > 70;
+```
+
+**Example using HAVING:**
+
+```sql
+SELECT department, AVG(marks)
+FROM Students
+GROUP BY department
+HAVING AVG(marks) > 75;
+```
+
+### 14.2 Combining WHERE, GROUP BY and HAVING
+
+```sql
+SELECT department, COUNT(*)
+FROM Students
+WHERE marks > 70
+GROUP BY department
+HAVING COUNT(*) > 1;
+```
+
+This query:
+1. Selects students scoring above 70.
+2. Groups them department-wise.
+3. Displays departments having more than one qualifying student.
+
+## 15. SQL Query Execution Order
+
+The logical processing order of a typical SELECT query is:
+
+1. FROM
+2. WHERE
+3. GROUP BY
+4. HAVING
+5. SELECT
+6. ORDER BY
+7. LIMIT
+
+## 16. Important Revision Points
+
+- `WHERE` filters individual records.
+- `HAVING` filters groups.
+- `DISTINCT` removes duplicate values from query results.
+- `ORDER BY ASC` sorts in ascending order.
+- `ORDER BY DESC` sorts in descending order.
+- `LIMIT` restricts the number of returned rows.
+- `BETWEEN` includes both boundary values.
+- `GROUP BY` is commonly used with aggregate functions.
+- `COUNT(*)` counts rows, including rows containing NULL values.
+- `IS NULL` checks for missing values.
